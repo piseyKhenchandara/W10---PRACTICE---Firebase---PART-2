@@ -12,8 +12,15 @@ class ArtistRepositoryFirebase implements ArtistRepository {
     '/artists.json',
   );
 
+  List<Artist>? _cachedArtists;
+
   @override
-  Future<List<Artist>> fetchArtists() async {
+  Future<List<Artist>> fetchArtists({bool forceFetch = false}) async {
+    // 1 - Return cache if available
+    if (_cachedArtists != null && !forceFetch) {
+      return _cachedArtists!;
+    }
+
     final http.Response response = await http.get(artistsUri);
 
     if (response.statusCode == 200) {
@@ -24,7 +31,9 @@ class ArtistRepositoryFirebase implements ArtistRepository {
       for (final entry in songJson.entries) {
         result.add(ArtistDto.fromJson(entry.key, entry.value));
       }
-      return result;
+
+      _cachedArtists = result;
+      return _cachedArtists!;
     } else {
       // 2- Throw expcetion if any issue
       throw Exception('Failed to load posts');

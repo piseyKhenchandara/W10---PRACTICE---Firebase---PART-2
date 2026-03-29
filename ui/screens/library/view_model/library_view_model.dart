@@ -41,17 +41,18 @@ class LibraryViewModel extends ChangeNotifier {
     fetchSong();
   }
 
-  Future<void> fetchSong() async {
+  Future<void> fetchSong({bool forceFetch = false}) async {
     // 1- Loading state
     data = AsyncValue.loading();
     notifyListeners();
 
     try {
       // 1- Fetch songs
-      List<Song> songs = await songRepository.fetchSongs();
+      List<Song> songs = await songRepository.fetchSongs(forceFetch: forceFetch);
 
-      // 2- Fethc artist
-      List<Artist> artists = await artistRepository.fetchArtists();
+    
+      // 2- Fetch artist
+      List<Artist> artists = await artistRepository.fetchArtists(forceFetch: forceFetch);
 
       // 3- Create the mapping artistid-> artist
       Map<String, Artist> mapArtist = {};
@@ -86,7 +87,7 @@ class LibraryViewModel extends ChangeNotifier {
       await songRepository.likeSong(songId);
       _likedSongIds.add(songId);
       likeValue = AsyncValue.success(null);
-      await fetchSong();
+      await fetchSong(forceFetch: true);
     } catch (e) {
       likeValue = AsyncValue.error(e);
       notifyListeners();
