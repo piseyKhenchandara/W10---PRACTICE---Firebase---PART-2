@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../../model/comment/comment.dart';
 import '../../../model/songs/song.dart';
+import '../../dtos/comment_dto.dart';
 import '../../dtos/song_dto.dart';
 import 'song_repository.dart';
 
@@ -59,4 +61,43 @@ class SongRepositoryFirebase extends SongRepository {
 
   @override
   Future<Song?> fetchSongById(String id) async {}
+
+  @override
+  Future<List<Comment>> fetchComments(String songId) async {
+    final uri = Uri.https(
+      'w10-practice-56d71-default-rtdb.asia-southeast1.firebasedatabase.app',
+      '/comments/$songId.json',
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+
+      // No comments yet
+      if (body == null) return [];
+
+      Map<String, dynamic> commentsJson = body;
+      List<Comment> result = [];
+      for (final entry in commentsJson.entries) {
+        result.add(CommentDto.fromJson(entry.key, entry.value));
+      }
+      return result;
+    } else {
+      throw Exception('Failed to load comments');
+    }
+  }
+
+  @override
+  Future<void> postComment(String songId, String username, String comment) async {
+    final uri = Uri.https(
+      'w10-practice-56d71-default-rtdb.asia-southeast1.firebasedatabase.app',
+      '/comments/$songId.json',
+    );
+
+    await http.post(
+      uri,
+      body: json.encode(CommentDto.toJson(username, comment)),
+    );
+  }
 }

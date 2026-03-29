@@ -1,3 +1,4 @@
+import '../../../model/comment/comment.dart';
 import '../../../model/songs/song.dart';
 
 abstract class SongRepository {
@@ -6,4 +7,8 @@ abstract class SongRepository {
   Future<Song?> fetchSongById(String id);
 
   Future<void> likeSong(String id);
+
+  Future<List<Comment>> fetchComments(String songId);
+
+  Future<void> postComment(String songId, String username, String comment);
 }

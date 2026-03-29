@@ -76,5 +76,23 @@
       "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=300&h=300&fit=crop&q=80",
       "likes": 0
     }
+  },
+  "comments": {
+    "song_1": {
+      "comment_1": {
+        "username": "Ronan",
+        "comment": "This song is fire!"
+      },
+      "comment_2": {
+        "username": "Pisey",
+        "comment": "Love this track!"
+      }
+    },
+    "song_2": {
+      "comment_1": {
+        "username": "Dev",
+        "comment": "Amazing beat!"
+      }
+    }
   }
 }

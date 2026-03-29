@@ -1,5 +1,6 @@
 // song_repository_mock.dart
 
+import '../../../model/comment/comment.dart';
 import '../../../model/songs/song.dart';
 import 'song_repository.dart';
 
@@ -28,5 +29,15 @@ class SongRepositoryMock implements SongRepository {
         orElse: () => throw Exception("No song with id $id in the database"),
       );
     });
+  }
+
+  @override
+  Future<List<Comment>> fetchComments(String songId) async {
+    return Future.delayed(Duration(seconds: 1), () => []);
+  }
+
+  @override
+  Future<void> postComment(String songId, String username, String comment) async {
+    return Future.delayed(Duration(seconds: 1), () {});
   }
 }
