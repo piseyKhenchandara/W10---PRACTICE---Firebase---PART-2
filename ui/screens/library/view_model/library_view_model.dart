@@ -15,6 +15,11 @@ class LibraryViewModel extends ChangeNotifier {
 
   AsyncValue<List<LibraryItemData>> data = AsyncValue.loading();
 
+  AsyncValue<void> likeValue = AsyncValue.success(null);
+
+  final Set<String> _likedSongIds = {};
+
+
   LibraryViewModel({
     required this.songRepository,
     required this.playerState,
@@ -36,7 +41,7 @@ class LibraryViewModel extends ChangeNotifier {
     fetchSong();
   }
 
-  void fetchSong() async {
+  Future<void> fetchSong() async {
     // 1- Loading state
     data = AsyncValue.loading();
     notifyListeners();
@@ -62,7 +67,6 @@ class LibraryViewModel extends ChangeNotifier {
           .toList();
 
       this.data = AsyncValue.success(data);
-
     } catch (e) {
       // 3- Fetch is unsucessfull
       data = AsyncValue.error(e);
@@ -70,6 +74,25 @@ class LibraryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool hasLiked(String songId) => _likedSongIds.contains(songId);
+
+  Future<void> likeSong(String songId) async {
+    if (_likedSongIds.contains(songId)) return;
+
+    likeValue = AsyncValue.loading();
+    notifyListeners();
+
+    try {
+      await songRepository.likeSong(songId);
+      _likedSongIds.add(songId);
+      likeValue = AsyncValue.success(null);
+      await fetchSong();
+    } catch (e) {
+      likeValue = AsyncValue.error(e);
+      notifyListeners();
+    }
+  }
+  
   bool isSongPlaying(Song song) => playerState.currentSong == song;
 
   void start(Song song) => playerState.start(song);

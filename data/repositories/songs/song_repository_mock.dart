@@ -4,12 +4,19 @@ import '../../../model/songs/song.dart';
 import 'song_repository.dart';
 
 class SongRepositoryMock implements SongRepository {
-  final List<Song> _songs = [  ];
+  final List<Song> _songs = [];
 
   @override
   Future<List<Song>> fetchSongs() async {
     return Future.delayed(Duration(seconds: 4), () {
-      throw _songs;
+      return _songs;
+    });
+  }
+
+  @override
+  Future<void> likeSong(String id) async {
+    return Future.delayed(Duration(seconds: 1), () {
+      return null;
     });
   }
 
